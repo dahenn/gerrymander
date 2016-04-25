@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import re
 
-pd.options.display.max_rows = 444
+pd.options.display.max_rows = 50
 
 def analyze_election(file, year):
     print "ELECTION YEAR ", year
@@ -70,6 +70,10 @@ def analyze_election(file, year):
     df_winners = df_winners.stack().reset_index()[['STATE ABBREVIATION','D','winner']].dropna()
     df = pd.merge(df,df_winners,how='left',on=['STATE ABBREVIATION', 'D'])
     df.loc[df['winner']==df['PARTY'],'GE WINNER INDICATOR'] = 'W'
+    df_groups = df.groupby(['STATE ABBREVIATION','D','PARTY','CANDIDATE NAME (Last)']).sum()[['GENERAL VOTES']]
+    df['VOTE_MAX'] = df.groupby(['STATE ABBREVIATION','D','PARTY'])['GENERAL VOTES'].transform(max)
+    df = df.loc[df['GENERAL VOTES']==df['VOTE_MAX']]
+    all_data[year] = df
     # What are the results?
     #print df_winners.groupby(['STATE ABBREVIATION','winner']).count().unstack()
     df_results = df_winners.groupby(['winner']).count()[['D']]
@@ -113,6 +117,7 @@ def analyze_election(file, year):
 
 actual_d = dict()
 nat_d = dict()
+all_data = dict()
 
 #analyze_election('results02.csv','2002') #Too many weird elections (see Louisiana)
 analyze_election('results04.csv','2004')
@@ -124,4 +129,21 @@ analyze_election('results14.csv','2014')
 seat_diff = pd.concat([pd.DataFrame.from_dict(actual_d, orient='index'),pd.DataFrame.from_dict(nat_d, orient='index')], axis=1).sort_index()
 seat_diff.columns = ['actual','avg']
 seat_diff['diff'] = seat_diff['actual'] - seat_diff['avg']
-print seat_diff
+seat_diff.to_csv('output/seat differential.csv')
+df_all = pd.concat(all_data)
+df_votesbystate = df_all.groupby(['year','STATE ABBREVIATION','PARTY']).sum()[['GENERAL VOTES']].unstack()
+df_votesbystate['Total'] = df_votesbystate['GENERAL VOTES']['D'] + df_votesbystate['GENERAL VOTES']['R']
+df_votesbystate['Share_D'] = df_votesbystate['GENERAL VOTES']['D']/df_votesbystate['Total']
+df_votesbystate['Share_R'] = df_votesbystate['GENERAL VOTES']['R']/df_votesbystate['Total']
+df_seatsbystate = df_all.groupby(['year','STATE ABBREVIATION','D'],as_index=False).count().groupby(['year','STATE ABBREVIATION']).count().rename(columns = {'winner':'total_reps'})[['total_reps']]
+df_votesbystate = df_votesbystate.join(df_seatsbystate)
+df_votesbystate.columns = ['VOTES_D','VOTES_R','TOTAL','SHARE_D','SHARE_R','TOTAL_REPS']
+df_votesbystate['REPS_STATE_D'] = (df_votesbystate['SHARE_D']*df_votesbystate['TOTAL_REPS']).round(0)
+df_votesbystate['REPS_STATE_R'] = (df_votesbystate['SHARE_R']*df_votesbystate['TOTAL_REPS']).round(0)
+df_actual = df_all.loc[df_all['GE WINNER INDICATOR']=='W'].groupby(['year','STATE ABBREVIATION','PARTY']).count().rename(columns = {'winner':'actual_reps'})[['actual_reps']].unstack().fillna(0)
+df_actual.columns = ['REPS_ACT_D','REPS_ACT_R']
+df_votesbystate = df_votesbystate.join(df_actual)
+df_votesbystate['R_SURPLUS'] = (df_votesbystate['REPS_ACT_R'] - df_votesbystate['REPS_STATE_R'])/df_votesbystate['TOTAL_REPS']
+df_rsurplus = df_votesbystate[['R_SURPLUS']].unstack(0).fillna(0)
+df_rsurplus['AVG'] = df_rsurplus.mean(axis=1)
+df_rsurplus.sort_values('AVG').to_csv('output/surplus_by_state.csv')
