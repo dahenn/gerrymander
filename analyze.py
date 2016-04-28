@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import re
+import csv
 
 pd.options.display.max_rows = 50
 
@@ -126,11 +127,15 @@ analyze_election('results08.csv','2008')
 analyze_election('results10.csv','2010')
 analyze_election('results12.csv','2012')
 analyze_election('results14.csv','2014')
+
+# Natl vs Elected share of seats (Dem)
 seat_diff = pd.concat([pd.DataFrame.from_dict(actual_d, orient='index'),pd.DataFrame.from_dict(nat_d, orient='index')], axis=1).sort_index()
 seat_diff.columns = ['actual','avg']
 seat_diff['diff'] = seat_diff['actual'] - seat_diff['avg']
-seat_diff.to_csv('output/seat differential.csv')
+seat_diff.to_csv('temp/seat_differential.csv',index=False)
 df_all = pd.concat(all_data)
+
+# Run by state analysis
 df_votesbystate = df_all.groupby(['year','STATE ABBREVIATION','PARTY']).sum()[['GENERAL VOTES']].unstack()
 df_votesbystate['Total'] = df_votesbystate['GENERAL VOTES']['D'] + df_votesbystate['GENERAL VOTES']['R']
 df_votesbystate['Share_D'] = df_votesbystate['GENERAL VOTES']['D']/df_votesbystate['Total']
@@ -146,4 +151,31 @@ df_votesbystate = df_votesbystate.join(df_actual)
 df_votesbystate['R_SURPLUS'] = (df_votesbystate['REPS_ACT_R'] - df_votesbystate['REPS_STATE_R'])/df_votesbystate['TOTAL_REPS']
 df_rsurplus = df_votesbystate[['R_SURPLUS']].unstack(0).fillna(0)
 df_rsurplus['AVG'] = df_rsurplus.mean(axis=1)
-df_rsurplus.sort_values('AVG').to_csv('output/surplus_by_state.csv')
+df_rsurplus = df_rsurplus.reset_index()
+df_rsurplus.columns = ['STATE','2004','2006','2008','2010','2012','2014','AVG']
+df_rsurplus.sort_values('AVG').to_csv('temp/surplus_by_state.csv',index=False)
+
+# Vote vs Seat share by year
+df_votesbyyear = df_all.groupby(['year','PARTY']).sum()[['GENERAL VOTES']].unstack()
+df_votesbyyear['Total'] = df_votesbyyear['GENERAL VOTES']['D'] + df_votesbyyear['GENERAL VOTES']['R']
+df_votesbyyear['share_D'] = df_votesbyyear['GENERAL VOTES']['D'] / df_votesbyyear['Total']
+df_votesbyyear['share_R'] = df_votesbyyear['GENERAL VOTES']['R'] / df_votesbyyear['Total']
+df_votesbyyear = df_votesbyyear[['share_D','share_R']].reset_index()
+df_votesbyyear.to_csv('temp/vote_share_by_year.csv',index=False)
+df_seatsbyyear = df_all.loc[df_all['GE WINNER INDICATOR']=='W'].groupby(['year','winner']).count()[['GENERAL VOTES']].rename(columns = {'GENERAL VOTES':'seats'}).unstack()
+df_seatsbyyear['Total'] = df_seatsbyyear['seats']['D'] + df_seatsbyyear['seats']['R']
+df_seatsbyyear['share_D'] = df_seatsbyyear['seats']['D'] / df_seatsbyyear['Total']
+df_seatsbyyear['share_R'] = df_seatsbyyear['seats']['R'] / df_seatsbyyear['Total']
+df_seatsbyyear = df_seatsbyyear[['share_D','share_R']].reset_index()
+df_seatsbyyear.to_csv('temp/seat_share_by_year.csv',index_label=False)
+
+# Eliminate blank rows
+for f in ['seat_differential.csv','surplus_by_state.csv','vote_share_by_year.csv','seat_share_by_year.csv']:
+    in_file = open('temp/'+f, 'rb')
+    output = open('output/'+f, 'wb')
+    writer = csv.writer(output)
+    for row in csv.reader(in_file):
+        if any(row):
+            writer.writerow(row)
+    in_file.close()
+    output.close()
