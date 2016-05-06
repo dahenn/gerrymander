@@ -1,0 +1,121 @@
+body {
+  font: 14px Arial;
+  background-color: #f7f7f7;
+}
+
+p, li {font-size: 1.1em;}
+p {text-indent: 10px;}
+.no-indent p {text-indent: 0;}
+h2 {
+  text-align: center;
+  width:100%;
+  padding:10px;
+  color: #fbfbfb;
+  background-color: #666;
+}
+h3 {font-size: 1.25em;}
+div{
+  width:900px;
+  margin:auto;
+}
+
+p, h3{padding:0 15px;}
+
+.axis path,
+.axis line {
+    fill: none;
+    stroke: black;
+    stroke-width: 1;
+    shape-rendering: crispEdges;
+}
+
+text.label {
+  fill:#fff;
+  font-weight: bold;
+}
+
+#chart1,#chart2{
+  width:900px;
+  margin:auto;
+}
+input.button-top{
+  width:48%;
+  padding:0;
+  margin: 0 .8%;
+  border:0;
+  height:45px;
+  border-radius: 8px;
+  background-color: #bbb;
+  font-weight: bold;
+}
+input.button-top:focus, .button_chart3:focus, .button_chart4:focus{
+  background-color: #f9f9f9;
+  outline:none;
+  border:2px solid #bbb;
+}
+path {
+    stroke: steelblue;
+    stroke-width: 2;
+    fill: none;
+}
+.area {
+    fill: lightsteelblue;
+      stroke-width: 0;
+}
+
+.bar-positive {
+  fill:#0f4fae;
+}
+.bar-negative {
+  fill:#ae0f0f;
+}
+
+#zero.avgline {
+  stroke:#222;
+}
+
+#non-zero.avgline.positive {
+  stroke:#ae0f0f;
+}
+
+#non-zero.avgline.negative {
+  stroke:#0f4fae;
+}
+
+div.tooltip {
+    position: absolute;
+    text-align: center;
+    font-size: 12px;
+    width: 160px;
+    height: 46px;
+    padding: 2px;
+    background: #eee;
+    border: 1px solid #333;
+    border-radius: 8px;
+    pointer-events: none;
+    line-height: 16px;
+}
+.button_chart3{
+  width:30%;
+  padding:0;
+  border:0;
+  margin:0 1.5%;
+  border-radius: 8px;
+  height:45px;
+  background-color: #bbb;
+  font-weight: bold;
+}
+.button_chart4{
+  width:15%;
+  padding:0;
+  border:0;
+  margin:0 0.5%;
+  border-radius: 8px;
+  height:45px;
+  background-color: #bbb;
+  font-weight: bold;
+}
+.button_chart4_big{
+  width:100%;
+  margin-bottom: 10px;
+}

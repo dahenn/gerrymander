@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<link rel='stylesheet' type='text/css' href='style.css'>
+<body>
+<div id='header'>
+  <h1>Gerrymandering</h1>
+</div>
+<div id='intro_text' class='text'>
+  <h2>Why should we care about gerrymandering?</h2>
+  <p>Every two years, the entire House of Representatives is re-elected. This body of 435 legislators is intended, as the name suggests, to be representative of the American electorate. In 2010, this meant about <a href='http://www.census.gov/2010census/data/apportionment-data-text.php'>700,00 people per representative</a>
+    . Given this seemingly straightforward relationship, one would expect, on average, that the political makeup of the House of Representatives would reflect the political makeup of the US voting population.</p>
+  <p>Of course, the relationship isn’t so simple. Representatives in actuality are elected from States, which are then divided into Congressional districts. The determination of the geography of these districts is where gerrymandering enters the picture. <a href='http://www.dictionary.com/browse/gerrymander'>Gerrymandering</a>
+     is the process of “dividing of a state [] into election districts so as to give one political party a majority in many districts while concentrating the voting strength of the other party into as few districts as possible".</p>
+  <h2>What is the best strategy for gerrymandering?</h2>
+  <p>Gerrymandering is to some degree in the interests of both parties, regardless of whether they’re in power. <a href='http://www.redistrictingthenation.com/whatis-who.aspx'>The redrawing of districts</a> is generally determined by whichever party is the majority in the State legislature or holds the Governorship
+    , and therefore is a highly politicized process. The interests in this process differ for the party as a whole versus an individual representative:</p>
+  <ul>
+    <li>For the parties, the goal is to maximize the number of seats they hold and minimize the seats for the opposition party. This means that the optimal strategy is to place as many of the opposing party’s voters in as few districts as possible, resulting in few districts that are won by a large margin. Then,
+      they would like to create many districts won by their own party, but by a lesser (but still comfortable) margin.</li>
+    <br />
+    <li>For the individual representatives, we can cynically assume their only interest is to stay elected in their district. Therefore, they would be glad to be placed in a district with a very high probability of their party’s win. Oddly enough, this means that a Congressperson from one party could encourage
+      the redrawing of their district in a way that the opposing party that is in control would also like.</li>
+  </ul>
+  <h2>Do we see gerrymandering happening in the data?</h2>
+  <p>A simplistic alternative scenario in which gerrymandering plays no role in the determination of House seats would be to assume that the party makeup of the House should be approximately the same as the party makeup of the national vote in congressional elections. Below, you can see whether that assumption holds true in the last 6 elections.</p>
+  <h3>Switch between predicted makeup based on the national shares of Democratic versus Republican votes, versus the actual makeup that resulted in the election:</h3>
+</div>
+<div id="chart1">
+  <div id="option">
+    <input name="revertButton"
+           type="button"
+           value="National Vote Share"
+           onclick="revertData()"
+           class="button-top"
+           autofocus/>
+      <input name="updateButton"
+             type="button"
+             value="Actual Seat Share"
+             onclick="updateData()"
+             class="button-top" />
+  </div>
+</div>
+<div class='text no-indent'>
+  <p>In every year apart from 2008, it's quite clear that the blue share shrinks going from national share to actual share.</p>
+  <h3>If this discrepancy were translated to actual seats in the House, we see the following:</h3>
+</div>
+<div id="chart2">
+</div>
+<div class='text no-indent'>
+  <h2>Republicans often win significantly more seats than would be predicted based on the national shares of votes</h2>
+  <p>There does seems to be a clear pattern of Republicans winning more seats. Or, perhaps this is just too simplistic of an analysis. Representatives aren't doled out on the national level, right? What if we looked at this analysis on a more granular level, and looked at the vote shares in every state rather than the nation
+    as a whole? Would the same results hold?</p>
+  <p>To answer these questions, one can look at each State's House delegation for each election year and ask, "Did the House delegation accurately reflect the party voting on a state-wide basis? If not, which party was overrepresented and by how much?"</p>
+  <h3>This chart plots the overrepresentation of each party for each election year in every state and reports the average over six elections:</h3>
+</div>
+<div id='chart3'>
+  <input name="updateButton"
+         type="button"
+         value="Sort by Average"
+         onclick="sortAverage()"
+         class="button_chart3" />
+  <input name="updateButton"
+        type="button"
+        value="Sort by Gerrymandered Representatives"
+        onclick="sortMisreps()"
+        class="button_chart3" />
+  <input name="updateButton"
+        type="button"
+        value="Sort by Total Representatives"
+        onclick="sortReps()"
+        class="button_chart3" />
+</div>
+<div class='text no-indent'>
+  <h2>Gerrymandering benefits different parties in different states</h2>
+  <h3>The Republican Party benefits from gerrymandering in more states than does the Democratic Party.</h3>
+  <ul>
+    <li><span style="font-weight:bold; color:#ae0f0f">27 states</span> were gerrymandered to benefit the Republican Party.</li>
+    <li><span style="font-weight:bold">9 states</span> were not influenced at all by gerrymandering, 7 of which only have one representative, making gerrymandering impossible.</li>
+    <li><span style="font-weight:bold; color:#0f4fae">14 states</span> are gerrymandered to benefit the Democratic Party.</li>
+  </ul>
+  <h3>While the Democratic Party has the two highest states with the most 'gerrymandered representatives', the Republican Party has more overall 'gerrymandered representatives'.</h3>
+  <p>'Gerrymandered representatives' are calculated by multiplying the percent of the state's House delegation that is in the 'wrong' party according to the state-wide vote by the total number of delegates in that state.</p>
+  <p>While California and New York have the two highest values and favor the Democratic Party, the Republican Party has more 'gerrymandered representatives' in total: <span style="font-weight:bold;color:#ae0f0f">22.21</span> for the Republican Party and <span style="font-weight:bold; color:#0f4fae">17.63</span> for the Democratic Party.</p>
+  <h2>Why is the Republican Party better at gerrymandering?</h2>
+  <p>Looking back at the discussion of strategy surrounding gerrymandering, a successful gerrymanderer will look to win elections for their party with a moderate but comfortable margin, and will look to force the other party into fewer victories with higher margins.</p>
+  <h3>The Republican Party succeeds in following the strategy of winning with moderate margins, and losing to large margins:</h3>
+</div>
+<div id='chart4'>
+  <input name="updateButton"
+        type="button"
+        value="Aggregated"
+        onclick="redrawGraph()"
+        class="button_chart4 button_chart4_big" />
+  <input name="updateButton"
+        type="button"
+        value="2004"
+        onclick="updateGraph(2004)"
+        class="button_chart4" />
+  <input name="updateButton"
+        type="button"
+        value="2006"
+        onclick="updateGraph(2006)"
+        class="button_chart4" />
+<input name="updateButton"
+      type="button"
+      value="2008"
+      onclick="updateGraph(2008)"
+      class="button_chart4" />
+<input name="updateButton"
+      type="button"
+      value="2010"
+      onclick="updateGraph(2010)"
+      class="button_chart4" />
+<input name="updateButton"
+      type="button"
+      value="2012"
+      onclick="updateGraph(2012)"
+      class="button_chart4" />
+<input name="updateButton"
+      type="button"
+      value="2014"
+      onclick="updateGraph(2014)"
+      class="button_chart4" />
+</div>
+<div class='text no-indent'>
+  <p>Republican wins generally have margins of 15 - 40 percentage points. Democratic wins, on the other hand, have a much wider range and extend into the range of 60 - 90 percentage point wins.</p>
+</div>
+<!-- load the d3.js library -->
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="js/chart1.js"></script>
+<script src="js/chart2.js"></script>
+<script src="js/chart3.js"></script>
+<script src="js/chart4.js"></script>
+</body>
