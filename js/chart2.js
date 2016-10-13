@@ -1,6 +1,6 @@
 // Set the dimensions of the canvas / graph
 var chart2margin = {top: 30, right: 20, bottom: 30, left: 50},
-    chart2width = 900 - margin.left - margin.right,
+    chart2width = parseInt(d3.select('#chart2').style('width')) - margin.left - margin.right,
     chart2height = 600 - margin.top - margin.bottom;
 
 // Set the ranges

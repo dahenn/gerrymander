@@ -1,7 +1,7 @@
 // Set the dimensions of the canvas / graph
 var chart3margin = {top: 30, right: 20, bottom: 30, left: 70},
-    chart3width = 900 - chart3margin.left - chart3margin.right,
-    chart3height = 920 - chart3margin.top - chart3margin.bottom;
+    chart3width = parseInt(d3.select('#chart2').style('width')) - chart3margin.left - chart3margin.right,
+    chart3height = 820 - chart3margin.top - chart3margin.bottom;
 
 var circle_rad = 4
 var animation_time = 1000
@@ -52,7 +52,6 @@ d3.csv("output/surplus_by_state.csv", function(error, data) {
     .enter().append('rect')
       .attr('class','staterect')
       .attr('id',function(d) {return d.State;})
-      .style('fill','#f7f7f7')
       .attr('x', 1)
       .attr('y', function(d) { return chart3y(d.State); })
       .attr('height', function(d) { return chart3y.rangeBand();})
@@ -61,24 +60,25 @@ d3.csv("output/surplus_by_state.csv", function(error, data) {
             div.transition()
                 .duration(200)
                 .style("opacity", .9);
-            div	.html(d.State_Full + ",<span style='font-weight:bold'> " + d.Total_Reps + "</span> Reps" + "<br/><span style='font-weight:bold'>" + Math.abs(d.Average*100).toFixed(1) + '%</span> Misrepresented' + '<br/><span style="font-weight:bold">' + (d.Mis_Reps*1).toFixed(2) + '</span> Reps Gerrymandered')
-                .style("left", (d3.event.pageX - 70) + "px")
-                .style("top", (d3.event.pageY - 55) + "px")
-                .style('display', 'inline');
             d3.select('#'+d.State)
-                .style('fill','#eaeaea');
+                .style('fill','#303636');
+            div	.html(d.State_Full + ",<span style='font-weight:bold'> " + d.Total_Reps + "</span> Reps" + "<br/><span style='font-weight:bold'>" + Math.abs(d.Average*100).toFixed(1) + '%</span> Misrepresented' + '<br/><span style="font-weight:bold">' + (d.Mis_Reps*1).toFixed(2) + '</span> Reps Gerrymandered')
+                .style('display', 'inline')
+                .style("left", (d3.event.pageX - 70) + "px")
+                .style("top", (d3.event.pageY - 60) + "px");
+
             })
       .on('mousemove', function(d) {
           div
               .style("left", (d3.event.pageX - 70) + "px")
-              .style("top", (d3.event.pageY - 55) + "px");
+              .style("top", (d3.event.pageY - 60) + "px");
       })
       .on("mouseout", function(d) {
           div.transition()
               .duration(200)
               .style("opacity", 0);
           d3.select('#'+d.State)
-              .style('fill','#f7f7f7');
+              .style('fill','#191c1c');
       });
 
   chart3.append('line')
@@ -86,7 +86,7 @@ d3.csv("output/surplus_by_state.csv", function(error, data) {
       .attr('x2', chart3width/2)
       .attr('y1', 1)
       .attr('y2', chart3height - chart3y.rangeBand()/2 - 1)
-      .style('stroke','#333')
+      .style('stroke','#919191')
       .style('stroke-dasharray','5,5')
       .style('stroke-width',1);
 
@@ -94,7 +94,7 @@ d3.csv("output/surplus_by_state.csv", function(error, data) {
       .data(data)
     .enter().append('line')
       .attr('class','stateline')
-      .style('stroke','#999')
+      .style('stroke','#919191')
       .style('stroke-dasharray','2,4')
       .style('stroke-width',1)
       .attr('x1', 1)
@@ -157,22 +157,22 @@ var sortMisreps = function() {
                   .style("opacity", .9);
               div	.html(d.State_Full + ",<span style='font-weight:bold'> " + d.Total_Reps + "</span> Reps" + "<br/><span style='font-weight:bold'>" + Math.abs(d.Average*100).toFixed(1) + '%</span> Misrepresented' + '<br/><span style="font-weight:bold">' + (d.Mis_Reps*1).toFixed(2) + '</span> Reps Gerrymandered')
                   .style("left", (d3.event.pageX - 70) + "px")
-                  .style("top", (d3.event.pageY - 55) + "px")
+                  .style("top", (d3.event.pageY - 60) + "px")
                   .style('display', 'inline');
               d3.select('#'+d.State)
-                  .style('fill','#eaeaea');
+                  .style('fill','#303636');
               })
         .on('mousemove', function(d) {
             div
                 .style("left", (d3.event.pageX - 70) + "px")
-                .style("top", (d3.event.pageY - 55) + "px");
+                .style("top", (d3.event.pageY - 60) + "px");
         })
         .on("mouseout", function(d) {
             div.transition()
                 .duration(200)
                 .style("opacity", 0);
             d3.select('#'+d.State)
-                .style('fill','#f7f7f7');
+                .style('fill','#191c1c');
         });
 
     chart3.selectAll('.avgline')
@@ -220,22 +220,22 @@ var sortAverage = function() {
                   .style("opacity", .9);
               div	.html(d.State_Full + ",<span style='font-weight:bold'> " + d.Total_Reps + "</span> Reps" + "<br/><span style='font-weight:bold'>" + Math.abs(d.Average*100).toFixed(1) + '%</span> Misrepresented' + '<br/><span style="font-weight:bold">' + (d.Mis_Reps*1).toFixed(2) + '</span> Reps Gerrymandered')
                   .style("left", (d3.event.pageX - 70) + "px")
-                  .style("top", (d3.event.pageY - 55) + "px")
+                  .style("top", (d3.event.pageY - 60) + "px")
                   .style('display', 'inline');
               d3.select('#'+d.State)
-                  .style('fill','#eaeaea');
+                  .style('fill','#303636');
               })
         .on('mousemove', function(d) {
             div
                 .style("left", (d3.event.pageX - 70) + "px")
-                .style("top", (d3.event.pageY - 55) + "px");
+                .style("top", (d3.event.pageY - 60) + "px");
         })
         .on("mouseout", function(d) {
             div.transition()
                 .duration(200)
                 .style("opacity", 0);
             d3.select('#'+d.State)
-                .style('fill','#f7f7f7');
+                .style('fill','#191c1c');
         });
 
     chart3.selectAll('.avgline')
@@ -283,22 +283,22 @@ var sortReps = function() {
                   .style("opacity", .9);
               div	.html(d.State_Full + ",<span style='font-weight:bold'> " + d.Total_Reps + "</span> Reps" + "<br/><span style='font-weight:bold'>" + Math.abs(d.Average*100).toFixed(1) + '%</span> Misrepresented' + '<br/><span style="font-weight:bold">' + (d.Mis_Reps*1).toFixed(2) + '</span> Reps Gerrymandered')
                   .style("left", (d3.event.pageX - 70) + "px")
-                  .style("top", (d3.event.pageY - 55) + "px")
+                  .style("top", (d3.event.pageY - 60) + "px")
                   .style('display', 'inline');
               d3.select('#'+d.State)
-                  .style('fill','#eaeaea');
+                  .style('fill','#303636');
               })
         .on('mousemove', function(d) {
             div
                 .style("left", (d3.event.pageX - 70) + "px")
-                .style("top", (d3.event.pageY - 55) + "px");
+                .style("top", (d3.event.pageY - 60) + "px");
         })
         .on("mouseout", function(d) {
             div.transition()
                 .duration(200)
                 .style("opacity", 0);
             d3.select('#'+d.State)
-                .style('fill','#f7f7f7');
+                .style('fill','#191c1c');
         });
 
     chart3.selectAll('.avgline')

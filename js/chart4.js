@@ -1,6 +1,6 @@
 // Set the dimensions of the canvas / graph
 var chart4margin = {top: 30, right: 20, bottom: 75, left: 50},
-    chart4width = 900 - chart4margin.left - chart4margin.right,
+    chart4width = parseInt(d3.select('#chart4').style('width')) - chart4margin.left - chart4margin.right,
     chart4height = 600 - chart4margin.top - chart4margin.bottom;
 
 // Set the ranges
@@ -8,7 +8,7 @@ var chart4x0 = d3.scale.ordinal().rangeRoundBands([0, chart4width],0.3);
 var chart4x1 = d3.scale.ordinal();
 var chart4y = d3.scale.linear().range([chart4height, 0]);
 var chart4color = d3.scale.ordinal()
-      .range(['#0f4fae','#ae0f0f']);
+      .range(["#4b50af", "#a03030"]);
 
 // Define the axes
 var chart4xAxis = d3.svg.axis().scale(chart4x0)
@@ -47,10 +47,10 @@ var drawGraph = function() {
           .call(chart4xAxis)
           .selectAll('text')
           .style("text-anchor", "end")
-          .attr("dx", "-.6em")
-          .attr("dy", (-chart4x1.rangeBand()/2) + 4)
+          .attr("dx", "-.3em")
+          .attr("dy", (-chart4x1.rangeBand()/2) + 15)
           .attr("transform", function(d) {
-              return "rotate(-90)"
+              return "rotate(-45)"
           });
       chart4.select('g.x.axis')
         .append('text')
@@ -89,20 +89,21 @@ var drawGraph = function() {
           .attr('class', 'iqr_box')
           .attr('x',chart4width*0.75)
           .attr('y',chart4height*0.11)
-          .attr('width',chart4width*0.2055)
-          .attr('height',chart4height*0.12)
+          .attr('width',200)
+          .attr('height',60)
           .attr('rx','8')
-          .attr('ry','8')
-          .attr('fill','#bbb');
+          .attr('ry','8');
 
       d3.json("output/iqr.json", function(error, iqrdata) {
 
         chart4.append('text')
+            .attr('dx', 10)
             .attr('class', 'iqr_text dem')
             .attr('x',chart4width*0.75 + 5)
             .attr('y',chart4height*0.1 + 25)
             .text('Democratic IQR: ' + (iqrdata['all']['D']['0.25']).toFixed(0) + ' to ' + (iqrdata['all']['D']['0.75']).toFixed(0));
         chart4.append('text')
+            .attr('dx', 10)
             .attr('class', 'iqr_text rep')
             .attr('x',chart4width*0.75 + 5)
             .attr('y',chart4height*0.1 + 50)
@@ -114,11 +115,11 @@ var drawGraph = function() {
 
 var updateGraph = function(year) {
   d3.csv("output/margin_buckets_" + year + ".csv", function(error, data) {
-
+      console.log(data);
       var party = d3.keys(data[0]).filter(function(key) { return key !=='bucket'; });
-
       data.forEach(function(d) {
         d.margin = party.map(function(name) { return {name: name, value: +d[name]}; });
+        console.log(d);
       });
 
       chart4y.domain([0, d3.max(data, function(d) { return d3.max(d.margin, function(d) { return d.value; }); })]);

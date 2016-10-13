@@ -1,0 +1,272 @@
+$font1: 'Roboto';
+$font2: 'Roboto Condensed';
+$text-color: #eaf1f1;
+$darkest: #191c1c;
+$darker: #266364;
+$dark: #298788;
+$medium: #31afb1;
+$light: #25dcde;
+$grey: #aaa;
+$text-bg: #222828;
+/*
+$text-color: #eee;
+$darkest: #111;
+$darker: #222;
+$dark: #555;
+$medium: #777;
+$light: #eee;
+$grey: #bbb;
+$text-bg: #333;
+*/
+body {
+  background: $darkest;
+  color:$text-color;
+  text-align: justify;
+  line-height: 1.5em;
+  font-family: $font1;
+  font-size: 16px;
+  width: 100%;
+}
+
+a, a:visited {color: $grey; text-decoration: none;}
+a:hover {color: $grey; text-decoration: underline;}
+h1,
+
+h2 {
+  color: $medium;
+  font: $font2 2.5em;
+  font-weight: 300;
+}
+
+h3 {font-weight: 300;}
+
+div {
+  margin: auto;
+  font: $font1;
+  font-weight: 300;
+  .header {
+      margin-top: 40px;
+      .header-left{
+          h1.top {
+            font-size: 3.5em;
+            font-weight: 500;
+            letter-spacing: 1px;
+            margin-top: 0px;
+          }
+          h2.top {
+            font-size: 2em;
+            letter-spacing: 1px;
+            text-align: left;
+            margin-top: 20px;
+            margin-right: 15px;
+            padding-bottom: 0px;
+            font-weight: 300;
+            color: $grey;
+          }
+      }
+      .header-right {
+          text-align: right;
+          font-size: 0.8em;
+          h2 {margin-top: 10px;}
+          h3 {
+            font-size: 1.4em;
+            margin-top: -5px;
+          }
+          a {
+            font-weight: 500;
+            color: $light;
+            text-decoration: none;
+          }
+      }
+  }
+  .btn-primary {
+      background-color: $text-bg;
+      border-color: $text-bg;
+      min-width: 60px;
+  }
+  .btn-primary.active, .btn-primary.active:hover, .btn-primary.active.focus, .btn-primary:hover, .btn-primary:active, .btn-primary:focus, .btn-primary:active:hover {background-color: $darker;border-color: $text-bg;}
+  .title {
+      text-align: left;
+  }
+  .text {
+      //background: $text-bg;
+      padding:15px;
+      float:left;
+      border-radius: 8px;
+  }
+  .full-width {
+      margin-bottom:30px;
+      h3 {color: $medium;}
+  }
+  .key {
+    margin-bottom: 50px;
+    .key1 {
+      padding:10px;
+      padding-left: 10%;
+    }
+    .key2 {
+      padding:10px;
+    }
+    h3 {
+        margin:0px 0px 5px 0px;
+        font-weight: 400;
+    }
+  }
+  .data-info {
+    margin-bottom: 50px;
+    span.emphasis {
+        color: $medium;
+        font-family: $font2;
+        font-weight: 400;
+        font-size: 1.2em;
+    }
+  }
+  .insight {
+    text-align: center;
+    margin: 40px 0 ;
+    h3 {
+        font-size:1.5em;
+        font-family: $font2;
+        font-weight: 300;
+        line-height: 1.5em;
+    }
+    h3 span.emphasis {
+        color: $medium;
+        font-weight: 600;
+    }
+  }
+  .stats {
+    display:inline-block;
+    padding:1%;
+    vertical-align: top;
+    text-align: center;
+    h3, h4 {margin-top:0px; font-weight:normal;}
+    h4 {margin-bottom: 0.75em;}
+  }
+  .no-inline {
+    display: block;
+  }
+}
+
+.divider {
+  margin-bottom:40px;
+  width:100%;
+  background: $darker;
+  padding: 30px 0;
+  font-style: italic;
+  margin-top: 60px;
+  display:table;
+  h2 {
+    text-align: center;
+    margin: 0px;
+  }
+  .left h2 {
+    color: $text-color;
+    font-family: $font2;
+    font-weight: 700;
+    font-size: 4em;
+    width:100%;
+    margin-bottom: 10px;
+  }
+  .right h2 {
+    color: $text-color;
+    font-weight: 300;
+    margin-bottom: 0px;
+    line-height: 40px;
+    text-align: center;
+  }
+}
+
+.feedback {
+    text-align: center;
+    padding: 20px;
+    border-radius: 4px;
+    background: $text-bg;
+    h3 {margin: 0px;}
+}
+
+//Page specific CSS
+
+div.header {
+    min-height:150px;
+    margin-top: 0px;
+    padding-top: 40px;
+    .header-left{
+        max-width:100%;
+        h1.top {color: $text-color;}
+    }
+}
+
+.header-bg {
+    background: url('img/bg.png');
+    background-position: top;
+    background-size: cover;
+    margin-bottom: 100px;
+}
+.btn-group {
+    margin: auto;
+    .btn, .btn-default {
+        font: 1.1em 'Roboto Condensed';
+        color: $text-color;
+        input {
+            background: none;
+            border: none;
+        }
+    }
+}
+.btn.active.focus {
+    outline: none;
+}
+
+svg {
+    text {
+        fill: $text-color;
+    }
+    path.domain {
+        fill: $darkest;
+    }
+}
+
+#chart2 {
+    .bar-positive{
+        fill:#4b50af;
+    }
+    .bar-negative {
+        fill:#a03030;
+    }
+}
+div.tooltip {
+    position: absolute;
+    text-align: center;
+    font-size: 12px;
+    width: 160px;
+    height: 55px;
+    padding: 2px;
+    background: #303636;
+    border: 1px solid #333;
+    border-radius: 2px;
+    pointer-events: none;
+    line-height: 16px;
+}
+#red {color:#a03030;}
+#blue {color:#4b50af;}
+#chart3 {
+    .staterect {fill: $darkest;}
+    circle {fill: #fff;}
+    #zero.avgline {
+      stroke:#ccc;
+    }
+
+    #non-zero.avgline.positive {
+      stroke:#a03030;
+    }
+
+    #non-zero.avgline.negative {
+      stroke:#4b50af;
+    }
+    svg{margin-top: 20px;}
+}
+
+rect.iqr_box {fill: $text-bg;}
+
+@media (max-width:620px) {div .header .header-left h1.top {font-size:1.8em;}}

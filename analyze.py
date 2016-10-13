@@ -114,12 +114,15 @@ def analyze_election(file, year):
     df_quantile = df_byelection.dropna().set_index('winner',append=True)[['margin']].unstack().quantile([.25,.75])
     df_quantile.columns = ['D','R']
     quantiles[year] = df_quantile.to_dict()
-    df_byelection = df_byelection.reset_index()[['margin','winner','count']].dropna().groupby(['margin','winner']).count().unstack().dropna().reset_index()
+    df_byelection = df_byelection.reset_index()[['margin','winner','count']].dropna().groupby(['margin','winner']).count().unstack().fillna(0).reset_index()
     df_byelection['bucket'] = pd.cut(df_byelection['margin'],np.arange(0,100,5),include_lowest=True)
-    df_byelection = df_byelection.groupby('bucket').sum()['count'].reindex(df_byelection['bucket'].drop_duplicates())
+    bucket_range = pd.DataFrame()
+    bucket_range['buckets'] =  pd.cut(range(0,99),np.arange(0,100,5),include_lowest=True).dropna()
+    df_byelection = df_byelection.groupby('bucket').sum()['count'].reindex(bucket_range['buckets'].drop_duplicates())
     df_byelection = df_byelection.reset_index()
     df_byelection.columns = ['bucket','D','R']
     df_byelection['bucket'] = df_byelection['bucket'].str.replace(', ',' - ').str.replace('[','').str.replace(']','').str.replace('(','')
+    df_byelection = df_byelection.fillna(value=0, axis=1)
     df_byelection.to_csv('output/margin_buckets_'+year+'.csv',index=False)
     print "------------------------------------------------"
 
@@ -136,7 +139,7 @@ analyze_election('results10.csv','2010')
 analyze_election('results12.csv','2012')
 analyze_election('results14.csv','2014')
 
-print quantiles
+# print quantiles
 
 # Natl vs Elected share of seats (Dem)
 seat_diff = pd.concat([pd.DataFrame.from_dict(actual_d, orient='index'),pd.DataFrame.from_dict(nat_d, orient='index')], axis=1).sort_index()
@@ -153,12 +156,13 @@ df_votesbystate['Share_R'] = df_votesbystate['GENERAL VOTES']['R']/df_votesbysta
 df_seatsbystate = df_all.groupby(['year','STATE ABBREVIATION','D'],as_index=False).count().groupby(['year','STATE ABBREVIATION']).count().rename(columns = {'winner':'total_reps'})[['total_reps']]
 df_votesbystate = df_votesbystate.join(df_seatsbystate)
 df_votesbystate.columns = ['VOTES_D','VOTES_R','TOTAL','SHARE_D','SHARE_R','TOTAL_REPS']
-df_votesbystate['REPS_STATE_D'] = (df_votesbystate['SHARE_D']*df_votesbystate['TOTAL_REPS']).round(0)
-df_votesbystate['REPS_STATE_R'] = (df_votesbystate['SHARE_R']*df_votesbystate['TOTAL_REPS']).round(0)
+df_votesbystate['REPS_STATE_D'] = (df_votesbystate['SHARE_D']*df_votesbystate['TOTAL_REPS'])#.round(0)
+df_votesbystate['REPS_STATE_R'] = (df_votesbystate['SHARE_R']*df_votesbystate['TOTAL_REPS'])#.round(0)
 df_actual = df_all.loc[df_all['GE WINNER INDICATOR']=='W'].groupby(['year','STATE ABBREVIATION','PARTY']).count().rename(columns = {'winner':'actual_reps'})[['actual_reps']].unstack().fillna(0)
 df_actual.columns = ['REPS_ACT_D','REPS_ACT_R']
 df_votesbystate = df_votesbystate.join(df_actual)
 df_votesbystate['R_SURPLUS'] = (df_votesbystate['REPS_ACT_R'] - df_votesbystate['REPS_STATE_R'])/df_votesbystate['TOTAL_REPS']
+# print df_votesbystate
 df_rsurplus = df_votesbystate[['R_SURPLUS']].unstack(0).fillna(0)
 df_rsurplus['AVG'] = df_rsurplus.mean(axis=1)
 df_rsurplus['Total Reps'] = df_votesbystate['TOTAL_REPS'].unstack(0)[['2004']]
@@ -182,7 +186,9 @@ df_seatsbyyear['Total'] = df_seatsbyyear['seats']['D'] + df_seatsbyyear['seats']
 df_seatsbyyear['share_D'] = df_seatsbyyear['seats']['D'] / df_seatsbyyear['Total']
 df_seatsbyyear['share_R'] = df_seatsbyyear['seats']['R'] / df_seatsbyyear['Total']
 df_seatsbyyear = df_seatsbyyear[['share_D','share_R']].reset_index()
-df_seatsbyyear.to_csv('temp/seat_share_by_year.csv',index=False)
+df_seatsbyyear['diff'] = df_seatsbyyear['share_D'] - df_votesbyyear['share_D']
+#print df_seatsbyyear
+df_seatsbyyear.to_csv('temp/seat_shares_by_year.csv',index=False)
 
 #All years vote margins
 df_margins = df_all.groupby(['STATE ABBREVIATION','year','D','winner', 'PARTY']).sum().unstack().dropna() #Should the uncontesteds be dropped?
@@ -192,6 +198,7 @@ df_margins['margin'] = abs(df_margins['D_pct'] - df_margins['R_pct'])
 quantiles['all'] = df_margins['margin'].unstack().quantile([.25,.75]).to_dict()
 df_margins['bucket'] = pd.cut(df_margins['margin'],np.arange(0,100,5),include_lowest=True)
 df_margins['count'] =  1
+print df_margins.loc[df_margins['margin'] > 80]
 df_margins = df_margins.reset_index()
 df_margins = df_margins.groupby(['bucket','winner']).sum()['count'].unstack().fillna(0).reset_index()
 df_margins['bucket'] = df_margins['bucket'].str.replace(', ',' - ').str.replace('[','').str.replace(']','').str.replace('(','')
@@ -201,7 +208,7 @@ with open('output/iqr.json', 'w') as fp:
     json.dump(quantiles, fp)
 
 # Eliminate blank rows
-for f in ['seat_differential.csv','surplus_by_state.csv','vote_share_by_year.csv','seat_share_by_year.csv','margins_aggregated.csv']:
+for f in ['seat_differential.csv','surplus_by_state.csv','vote_share_by_year.csv','seat_shares_by_year.csv','margins_aggregated.csv']:
     in_file = open('temp/'+f, 'rb')
     output = open('output/'+f, 'wb')
     writer = csv.writer(output)
